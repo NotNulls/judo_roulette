@@ -41,8 +41,8 @@
         <div id="result" class="result">
             <div class="technique-name" id="techniqueName"></div>
             <div class="technique-details">
-                <span id="techniqueCategory"></span> •
-                Belt: <span id="techniqueBelt"></span>
+                <span id="techniqueCategory"></span>
+                <span>Belt: <span id="techniqueBelt"></span></span>
             </div>
         </div>
     </div>
@@ -52,7 +52,6 @@
             const category = document.getElementById('category').value;
             const belt = document.getElementById('belt').value;
 
-            // Show loading, hide previous result
             document.getElementById('loading').classList.add('show');
             document.getElementById('result').classList.remove('show');
 
@@ -71,11 +70,11 @@
 
                 const technique = await response.json();
 
-                // Display result
                 document.getElementById('techniqueName').textContent = technique.name;
                 document.getElementById('techniqueCategory').textContent =
                     technique.category === 'ne-waza' ? 'Ground Technique' : 'Standing Technique';
-                document.getElementById('techniqueBelt').textContent = technique.belt.charAt(0).toUpperCase() + technique.belt.slice(1);
+                document.getElementById('techniqueBelt').textContent =
+                    technique.belt.charAt(0).toUpperCase() + technique.belt.slice(1);
 
                 document.getElementById('result').classList.add('show');
             } catch (error) {
@@ -85,7 +84,6 @@
             }
         }
 
-        // Optional: Add Enter key support
         document.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 spinRoulette();

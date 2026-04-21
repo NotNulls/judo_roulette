@@ -47,6 +47,10 @@ h1 {
     text-align: left;
 }
 
+.filter-group:last-of-type {
+    margin-bottom: 0;
+}
+
 label {
     display: block;
     margin-bottom: 8px;
@@ -71,7 +75,6 @@ select:focus {
 button {
     width: 100%;
     padding: 12px;
-    border: 2px solid #ddd;
     border-radius: 10px;
     font-size: 16px;
     transition: all 0.3s;
@@ -80,7 +83,7 @@ button {
     border: none;
     cursor: pointer;
     font-weight: bold;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 button:hover {
@@ -116,12 +119,20 @@ button:hover {
     font-size: 2em;
     font-weight: bold;
     color: #333;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .technique-details {
     color: #666;
     font-size: 1.1em;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.technique-details span {
+    display: block;
 }
 
 .belt-badge {
