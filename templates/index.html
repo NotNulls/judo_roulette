@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judo Roulette - Random Technique Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🥋 Judo Roulette</h1>
+        <p class="subtitle">Let fate choose your next technique!</p>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label>🎯 Technique Category:</label>
+                <select id="category">
+                    <option value="all">All Techniques</option>
+                    <option value="ne-waza">Only Ne-Waza (Ground)</option>
+                    <option value="tachi-waza">Only Tachi-Waza (Standing)</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>🥋 Belt Level (and below):</label>
+                <select id="belt">
+                    <option value="all">All Belts</option>
+                    {% for belt in belts %}
+                    <option value="{{ belt }}">{{ belt | capitalize }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button onclick="spinRoulette()">🎲 Spin the Roulette 🎲</button>
+        </div>
+
+        <div id="loading" class="loading">
+            <p>🎯 Choosing technique...</p>
+        </div>
+
+        <div id="result" class="result">
+            <div class="technique-name" id="techniqueName"></div>
+            <div class="technique-details">
+                <span id="techniqueCategory"></span> •
+                Belt: <span id="techniqueBelt"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function spinRoulette() {
+            const category = document.getElementById('category').value;
+            const belt = document.getElementById('belt').value;
+
+            // Show loading, hide previous result
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('result').classList.remove('show');
+
+            try {
+                const response = await fetch('/roulette', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ category: category, belt: belt })
+                });
+
+                if (!response.ok) {
+                    throw new Error('No techniques found for these criteria');
+                }
+
+                const technique = await response.json();
+
+                // Display result
+                document.getElementById('techniqueName').textContent = technique.name;
+                document.getElementById('techniqueCategory').textContent =
+                    technique.category === 'ne-waza' ? 'Ground Technique' : 'Standing Technique';
+                document.getElementById('techniqueBelt').textContent = technique.belt.charAt(0).toUpperCase() + technique.belt.slice(1);
+
+                document.getElementById('result').classList.add('show');
+            } catch (error) {
+                alert(error.message);
+            } finally {
+                document.getElementById('loading').classList.remove('show');
+            }
+        }
+
+        // Optional: Add Enter key support
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                spinRoulette();
+            }
+        });
+    </script>
+</body>
+</html>
