@@ -161,3 +161,120 @@ button:hover {
 .loading.show {
     display: block;
 }
+
+/* Add these belt color classes to your existing style.css */
+.belt-yellow {
+    color: #d4af37;
+    font-weight: bold;
+    text-shadow: 0 0 2px rgba(0,0,0,0.2);
+}
+
+.belt-orange {
+    color: #ff8c00;
+    font-weight: bold;
+}
+
+.belt-green {
+    color: #2e8b57;
+    font-weight: bold;
+}
+
+.belt-blue {
+    color: #4169e1;
+    font-weight: bold;
+}
+
+.belt-brown {
+    color: #8b4513;
+    font-weight: bold;
+}
+
+.belt-black {
+    color: #1a1a1a;
+    font-weight: bold;
+    text-shadow: 0 0 1px rgba(0,0,0,0.3);
+}
+
+
+.belt-red {
+    color: #dc143c;
+    font-weight: bold;
+}
+
+/* Optional: Add a belt icon next to the belt text */
+.belt-color-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    margin-right: 8px;
+    vertical-align: middle;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Make the belt display more prominent */
+.technique-details span:last-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.belt-yellow {
+    color: #d4af37;
+    font-weight: bold;
+    text-shadow: 0 0 2px rgba(0,0,0,0.2);
+}
+
+.belt-orange {
+    color: #ff8c00;
+    font-weight: bold;
+}
+
+.belt-green {
+    color: #2e8b57;
+    font-weight: bold;
+}
+
+.belt-blue {
+    color: #4169e1;
+    font-weight: bold;
+}
+
+.belt-brown {
+    color: #8b4513;
+    font-weight: bold;
+}
+
+.belt-black {
+    color: #1a1a1a;
+    font-weight: bold;
+    text-shadow: 0 0 1px rgba(0,0,0,0.3);
+}
+
+.belt-red {
+    color: #dc143c;
+    font-weight: bold;
+}
+
+/* Make the belt text extra bold and prominent */
+#techniqueBelt {
+    font-size: 1.1em;
+}
+
+/* Optional: Add a belt icon next to the belt text */
+.belt-color-icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    margin-right: 8px;
+    vertical-align: middle;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Make the belt display more prominent */
+.technique-details span:last-child {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}

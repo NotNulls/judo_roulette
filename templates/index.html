@@ -89,6 +89,34 @@
                 spinRoulette();
             }
         });
+        // Complete belt color mapping function
+function applyBeltColor() {
+    const beltSpan = document.getElementById('techniqueBelt');
+    const beltText = beltSpan.textContent.toLowerCase().trim();
+
+    // Color mapping for belts (white and black excluded)
+    const beltColors = {
+        'yellow': '#d4af37',
+        'orange': '#ff8c00',
+        'green': '#2e8b57',
+        'blue': '#4169e1',
+        'brown': '#8b4513',
+        'red': '#dc143c'
+    };
+
+    // Reset to default (no color for white/black)
+    beltSpan.style.color = '';
+    beltSpan.style.fontWeight = '';
+
+    // Apply color if belt is in the mapping
+    if (beltColors[beltText]) {
+        beltSpan.style.color = beltColors[beltText];
+        beltSpan.style.fontWeight = 'bold';
+    }
+}
+
+// Call this function after setting the belt text
+ applyBeltColor();
     </script>
 </body>
 </html>
