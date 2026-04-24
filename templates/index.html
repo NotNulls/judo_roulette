@@ -7,6 +7,20 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+
+<!--    <div class="container">-->
+<!--        <h3>Welcome to TimerTimer, a simple timer</h3><br>-->
+<!--    <p><b>You can use it in three ways:</b><br><br>-->
+<!--      1. Enter a time in the input box (top left corner) and click the START button to begin timing.<br>-->
+<!--      Supports plain numbers and times ending with s, m, or h, e.g., 12 / 30s / 20m / 2h.-->
+<!--      <br><br>-->
+<!--      2. Set a timer by appending a time value to the URL. Supported parameters are the same as above, for example:-->
+<!--      (will start a 25-minute timer)<br><br>-->
+<!--      3. Click one of the buttons provided at the top of the page to start a corresponding timer.<br><br>-->
+<!--      For more information, see the link at the bottom right. Have a nice day!-->
+<!--    </p>-->
+<!--    </div>-->
+
     <div class="container">
         <h1>🥋 Judo Roulette</h1>
         <p class="subtitle">Let fate choose your next technique!</p>
@@ -46,6 +60,23 @@
             </div>
         </div>
     </div>
+
+    <div>
+    <form method="POST" action="{{ url_for('custom') }}" style="display:inline">
+        <input name="time" class="time-input" placeholder="e.g. 12/30s/20m/2h">
+        <input type="submit" class="startButton" value="START">
+    </form>
+    &nbsp;&nbsp;
+    <a class="workButton" href="{{ url_for('minutes', num=25) }}">25 Minutes</a>
+    <a class="restButton" href="{{ url_for('minutes', num=5) }}">5 Minutes</a>
+    <a class="pomodoro" href="https://greyli.github.io/pomodoro" target="_blank">Pomodoro</a>
+    <a class="helpButton" id="help-btn">?</a>
+
+    {% for message in get_flashed_messages() %}
+    <div class="alert-info">
+        {{ message }}
+    </div>
+    {% endfor %}
 
     <script>
         async function spinRoulette() {

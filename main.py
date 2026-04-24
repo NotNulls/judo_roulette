@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, jsonify
+import re
+
+from flask import Flask, render_template, request, jsonify, flash, redirect, url_for
 import random
 
 app = Flask(__name__)
@@ -100,6 +102,33 @@ def roulette():
 
     chosen = random.choice(filtered)
     return jsonify(chosen)
+
+@app.route('/custom', methods=['GET', 'POST'])
+def custom():
+    time = request.form.get('time', 180)
+    # use re to validate input data
+    m = re.match('\d+[smh]?$', time)
+    if m is None:
+        flash(u'Please enter a valid time, e.g., 34, 20s, 15m, 2h')
+        return redirect(url_for('index'))
+    if time[-1] not in 'smh':
+        return redirect(url_for('timer', num=int(time)))
+    else:
+        type = {'s': 'timer', 'm': 'minutes', 'h': 'hours'}
+        return redirect(url_for(type[time[-1]], num=int(time[:-1])))
+
+@app.route('/<int:num>m')
+def minutes(num):
+    return redirect(url_for('timer', num=num*60))
+
+@app.route('/<int:num>h')
+def hours(num):
+    return redirect(url_for('timer', num=num*3600))
+
+# todo pomodoro mode: loop a 25-5 minutes cycle
+@app.route('/pomodoro')
+def pomodoro():
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
