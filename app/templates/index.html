@@ -61,21 +61,21 @@
         </div>
     </div>
 
-    <div>
-    <form method="POST" action="{{ url_for('custom') }}" style="display:inline">
-        <input name="time" class="time-input" placeholder="e.g. 12/30s/20m/2h">
-        <input type="submit" class="startButton" value="START">
-    </form>
-    &nbsp;&nbsp;
-    <a class="workButton" href="{{ url_for('minutes', num=25) }}">25 Minutes</a>
-    <a class="restButton" href="{{ url_for('minutes', num=5) }}">5 Minutes</a>
-    <a class="pomodoro" href="https://greyli.github.io/pomodoro" target="_blank">Pomodoro</a>
-    <a class="helpButton" id="help-btn">?</a>
+<!--    <div>-->
+<!--    <form method="POST" action="{{ url_for('main.custom') }}" style="display:inline">-->
+<!--        <input name="time" class="time-input" placeholder="e.g. 12/30s/20m/2h">-->
+<!--        <input type="submit" class="startButton" value="START">-->
+<!--    </form>-->
+<!--    &nbsp;&nbsp;-->
+<!--    <a class="workButton" href="{{ url_for('main.minutes', num=25) }}">25 Minutes</a>-->
+<!--    <a class="restButton" href="{{ url_for('main.minutes', num=5) }}">5 Minutes</a>-->
+<!--    <a class="pomodoro" href="https://greyli.github.io/pomodoro" target="_blank">Pomodoro</a>-->
+<!--    <a class="helpButton" id="help-btn">?</a>-->
 
-    {% for message in get_flashed_messages() %}
-    <div class="alert-info">
-        {{ message }}
-    </div>
+<!--    {% for message in get_flashed_messages() %}-->
+<!--    <div class="alert-info">-->
+<!--        {{ message }}-->
+<!--    </div>-->
     {% endfor %}
 
     <script>
