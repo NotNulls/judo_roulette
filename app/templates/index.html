@@ -54,9 +54,7 @@
                </span>
             </div>
          </div>
-      </div>
-      <!-- This closes the first container -->
-      <div class="container">
+      <div class="">
          <form method="POST" action="{{ url_for('main.custom') }}" style="display:inline">
             <input name="time" class="time-input" placeholder="e.g. 12/30s/20m/2h">
             <input type="submit" class="startButton" value="START">
@@ -72,6 +70,7 @@
          </div>
          {% endfor %}
       </div>
+  </div>
       <script>
          async function spinRoulette() {
              const category = document.getElementById('category').value;

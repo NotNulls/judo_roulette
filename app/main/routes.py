@@ -112,7 +112,7 @@ def custom():
     m = re.match('\d+[smh]?$', time)
     if m is None:
         flash(u'Please enter a valid time, e.g., 34, 20s, 15m, 2h')
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
     if time[-1] not in 'smh':
         return redirect(url_for('timer', num=int(time)))
     else:

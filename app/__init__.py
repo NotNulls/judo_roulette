@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from config import Config
 
@@ -5,6 +7,7 @@ from config import Config
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 
     from app.main import bp as main_bp
