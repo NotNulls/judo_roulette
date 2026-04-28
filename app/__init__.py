@@ -6,7 +6,7 @@ from config import Config
 
 def create_app(config_class=Config):
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+    # app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
     app.config.from_object(config_class)
 
 

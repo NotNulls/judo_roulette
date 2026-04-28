@@ -114,20 +114,20 @@ def custom():
         flash(u'Please enter a valid time, e.g., 34, 20s, 15m, 2h')
         return redirect(url_for('main.index'))
     if time[-1] not in 'smh':
-        return redirect(url_for('timer', num=int(time)))
+        return redirect(url_for('main.timer', num=int(time)))
     else:
         type = {'s': 'timer', 'm': 'minutes', 'h': 'hours'}
         return redirect(url_for(type[time[-1]], num=int(time[:-1])))
 
 @main_bp.route('/<int:num>m')
 def minutes(num):
-    return redirect(url_for('timer', num=num*60))
+    return redirect(url_for('main.index', num=num*60))
 
 @main_bp.route('/<int:num>h')
 def hours(num):
-    return redirect(url_for('timer', num=num*3600))
+    return redirect(url_for('main.index', num=num*3600))
 
 # todo pomodoro mode: loop a 25-5 minutes cycle
-@main_bp.route('/pomodoro')
-def pomodoro():
-    return render_template('index.html')
+# @main_bp.route('/pomodoro')
+# def pomodoro():
+#     return render_template('index.html')
