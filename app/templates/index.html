@@ -42,85 +42,67 @@
                </span>
             </div>
          </div>
-<!--      <div class="">-->
-<!--         <form method="POST" action="{{ url_for('main.custom') }}" style="display:inline">-->
-<!--            <input name="time" class="time-input" placeholder="e.g. 12/30s/20m/2h">-->
-<!--            <input type="submit" class="startButton" value="START">-->
-<!--         </form>-->
-<!--         &nbsp;&nbsp;-->
-<!--         <a class="workButton" href="{{ url_for('main.minutes', num=25) }}">25 Minutes</a>-->
-<!--         <a class="restButton" href="{{ url_for('main.minutes', num=5) }}">5 Minutes</a>-->
-<!--         <a class="pomodoro" href="https://greyli.github.io/pomodoro" target="_blank">Pomodoro</a>-->
-<!--         <a class="helpButton" id="help-btn">?</a>-->
-<!--         {% for message in get_flashed_messages() %}-->
-<!--         <div class="alert-info">-->
-<!--            {{ message }}-->
-<!--         </div>-->
-<!--         {% endfor %}-->
-<!--      </div>-->
-<!--          div class="container my-4">-->
-    <h1 class="text-center mb-4">Workout Interval Timer</h1>
-    <form id="workout-form" class="row gy-3">
-      <div class="col-md-6">
-        <div class="form-floating mb-3">
-          <input type="text" id="exercise-name" class="form-control" placeholder="Exercise name" required>
-          <label for="exercise-name">Exercise Name</label>
-        </div>
+         <h1 class="text-center mb-4">Workout Interval Timer</h1>
+         <form id="workout-form" class="row gy-3">
+            <div class="col-md-6">
+               <div class="form-floating mb-3">
+                  <input type="text" id="exercise-name" class="form-control" placeholder="Exercise name" required>
+                  <label for="exercise-name">Exercise Name</label>
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-floating mb-3">
+                  <input type="number" id="reps" class="form-control" min="1" step="1" placeholder="Reps" required>
+                  <label for="reps">Reps</label>
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-floating mb-3">
+                  <input type="number" id="sets" class="form-control" min="1" step="1" placeholder="Sets" required>
+                  <label for="sets">Sets</label>
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-floating mb-3">
+                  <input type="number" id="interval" class="form-control" min="1" step="1" placeholder="Interval (seconds)" required>
+                  <label for="interval">Interval (seconds)</label>
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-floating mb-3">
+                  <input type="number" id="rest" class="form-control" min="0" step="1" placeholder="Rest (seconds)" required>
+                  <label for="rest">Rest (seconds)</label>
+               </div>
+            </div>
+            <div class="col-12 text-center">
+               <button type="submit" id="add-workout" class="btn btn-primary mt-3">Add Workout</button>
+            </div>
+         </form>
+         <ul id="workout-list" class="list-group my-4" aria-label="List of added workouts"></ul>
+         <div class="text-center">
+            <h2 id="timer-display" aria-live="polite">00:00</h2>
+            <h3 id="current-set" class="highlighted-text" aria-live="polite"></h3>
+            <h3 id="current-exercise" class="highlighted-text" aria-live="polite"></h3>
+            <h3 id="workout-state" class="highlighted-text" aria-live="polite"></h3>
+            <div class="btn-group mt-3" role="group" aria-label="Timer controls">
+               <button id="start" class="btn btn-success">Start</button>
+               <button id="pause" class="btn btn-warning" disabled>Pause</button>
+               <button id="clear-workouts" class="btn btn-danger">Clear Workouts</button>
+            </div>
+            <div id="completion-message" class="alert alert-success mt-4 d-none" role="alert">
+               All workouts completed!
+            </div>
+            <div id="no-workouts-warning" class="alert alert-danger mt-4 d-none" role="alert">
+               No workouts added! Please add a workout to start the timer.
+            </div>
+         </div>
       </div>
-      <div class="col-md-6">
-        <div class="form-floating mb-3">
-          <input type="number" id="reps" class="form-control" min="1" step="1" placeholder="Reps" required>
-          <label for="reps">Reps</label>
-        </div>
+      <footer class="text-center mb-2">
+         <a href="https://github.com/codecaine-zz/workout_interval_timer" target="_blank" rel="noopener noreferrer">
+         <i class="fab fa-github fa-2x" aria-label="GitHub repository"></i>
+         </a>
+      </footer>
       </div>
-      <div class="col-md-4">
-        <div class="form-floating mb-3">
-          <input type="number" id="sets" class="form-control" min="1" step="1" placeholder="Sets" required>
-          <label for="sets">Sets</label>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="form-floating mb-3">
-          <input type="number" id="interval" class="form-control" min="1" step="1" placeholder="Interval (seconds)" required>
-          <label for="interval">Interval (seconds)</label>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="form-floating mb-3">
-          <input type="number" id="rest" class="form-control" min="0" step="1" placeholder="Rest (seconds)" required>
-          <label for="rest">Rest (seconds)</label>
-        </div>
-      </div>
-      <div class="col-12 text-center">
-        <button type="submit" id="add-workout" class="btn btn-primary mt-3">Add Workout</button>
-      </div>
-    </form>
-    <ul id="workout-list" class="list-group my-4" aria-label="List of added workouts"></ul>
-    <div class="text-center">
-      <h2 id="timer-display" aria-live="polite">00:00</h2>
-      <h3 id="current-set" class="highlighted-text" aria-live="polite"></h3>
-      <h3 id="current-exercise" class="highlighted-text" aria-live="polite"></h3>
-      <h3 id="workout-state" class="highlighted-text" aria-live="polite"></h3>
-
-      <div class="btn-group mt-3" role="group" aria-label="Timer controls">
-        <button id="start" class="btn btn-success">Start</button>
-        <button id="pause" class="btn btn-warning" disabled>Pause</button>
-        <button id="clear-workouts" class="btn btn-danger">Clear Workouts</button>
-      </div>
-      <div id="completion-message" class="alert alert-success mt-4 d-none" role="alert">
-        All workouts completed!
-      </div>
-      <div id="no-workouts-warning" class="alert alert-danger mt-4 d-none" role="alert">
-        No workouts added! Please add a workout to start the timer.
-      </div>
-    </div>
-  </div>
-  <footer class="text-center mb-2">
-    <a href="https://github.com/codecaine-zz/workout_interval_timer" target="_blank" rel="noopener noreferrer">
-      <i class="fab fa-github fa-2x" aria-label="GitHub repository"></i>
-    </a>
-  </footer>
-  </div>
       <script src="static/workout_timer.js"></script>
       <script>
          async function spinRoulette() {
