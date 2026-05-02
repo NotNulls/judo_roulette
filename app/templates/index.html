@@ -1,179 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Judo Roulette - Random Technique Generator</title>
-      <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-   </head>
-   <body>
-      <div class="container">
-         <h1>🥋 Judo Roulette</h1>
-         <p class="subtitle">Let fate choose your next technique!</p>
-         <div class="filters">
-            <div class="filter-group">
-               <label>🎯 Technique Category:</label>
-               <select id="category">
-                  <option value="all">All Techniques</option>
-                  <option value="ne-waza">Only Ne-Waza (Ground)</option>
-                  <option value="tachi-waza">Only Tachi-Waza (Standing)</option>
-               </select>
-            </div>
-            <div class="filter-group">
-               <label>🥋 Belt Level (and below):</label>
-               <select id="belt">
-                  <option value="all">All Belts</option>
-                  {% for belt in belts %}
-                  <option value="{{ belt }}">{{ belt | capitalize }}</option>
-                  {% endfor %}
-               </select>
-            </div>
-            <button onclick="spinRoulette()">🎲 Spin the Roulette 🎲</button>
-         </div>
-         <div id="loading" class="loading">
-            <p>🎯 Choosing technique...</p>
-         </div>
-         <div id="result" class="result">
-            <div class="technique-name" id="techniqueName"></div>
-            <div class="technique-details">
-               <span id="techniqueCategory"></span>
-               <span>Belt:
-               <span id="techniqueBelt"></span>
-               </span>
-            </div>
-         </div>
-         <h1 class="text-center mb-4">Workout Interval Timer</h1>
-         <form id="workout-form" class="row gy-3">
-            <div class="col-md-6">
-               <div class="form-floating mb-3">
-                  <input type="text" id="exercise-name" class="form-control" placeholder="Exercise name" required>
-                  <label for="exercise-name">Exercise Name</label>
-               </div>
-            </div>
-            <div class="col-md-6">
-               <div class="form-floating mb-3">
-                  <input type="number" id="reps" class="form-control" min="1" step="1" placeholder="Reps" required>
-                  <label for="reps">Reps</label>
-               </div>
-            </div>
-            <div class="col-md-4">
-               <div class="form-floating mb-3">
-                  <input type="number" id="sets" class="form-control" min="1" step="1" placeholder="Sets" required>
-                  <label for="sets">Sets</label>
-               </div>
-            </div>
-            <div class="col-md-4">
-               <div class="form-floating mb-3">
-                  <input type="number" id="interval" class="form-control" min="1" step="1" placeholder="Interval (seconds)" required>
-                  <label for="interval">Interval (seconds)</label>
-               </div>
-            </div>
-            <div class="col-md-4">
-               <div class="form-floating mb-3">
-                  <input type="number" id="rest" class="form-control" min="0" step="1" placeholder="Rest (seconds)" required>
-                  <label for="rest">Rest (seconds)</label>
-               </div>
-            </div>
-            <div class="col-12 text-center">
-               <button type="submit" id="add-workout" class="btn btn-primary mt-3">Add Workout</button>
-            </div>
-         </form>
-         <ul id="workout-list" class="list-group my-4" aria-label="List of added workouts"></ul>
-         <div class="text-center">
-            <h2 id="timer-display" aria-live="polite">00:00</h2>
-            <h3 id="current-set" class="highlighted-text" aria-live="polite"></h3>
-            <h3 id="current-exercise" class="highlighted-text" aria-live="polite"></h3>
-            <h3 id="workout-state" class="highlighted-text" aria-live="polite"></h3>
-            <div class="btn-group mt-3" role="group" aria-label="Timer controls">
-               <button id="start" class="btn btn-success">Start</button>
-               <button id="pause" class="btn btn-warning" disabled>Pause</button>
-               <button id="clear-workouts" class="btn btn-danger">Clear Workouts</button>
-            </div>
-            <div id="completion-message" class="alert alert-success mt-4 d-none" role="alert">
-               All workouts completed!
-            </div>
-            <div id="no-workouts-warning" class="alert alert-danger mt-4 d-none" role="alert">
-               No workouts added! Please add a workout to start the timer.
-            </div>
-         </div>
-      </div>
-      <footer class="text-center mb-2">
-         <a href="https://github.com/codecaine-zz/workout_interval_timer" target="_blank" rel="noopener noreferrer">
-         <i class="fab fa-github fa-2x" aria-label="GitHub repository"></i>
-         </a>
-      </footer>
-      </div>
-      <script src="static/workout_timer.js"></script>
-      <script>
-         async function spinRoulette() {
-             const category = document.getElementById('category').value;
-             const belt = document.getElementById('belt').value;
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judo Roulette - Random Technique Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🥋 Judo Roulette</h1>
+        <p class="subtitle">Let fate choose your next technique!</p>
 
-             document.getElementById('loading').classList.add('show');
-             document.getElementById('result').classList.remove('show');
+        <!-- Mode Selection -->
+        <div class="mode-selection">
+            <button id="roulette-mode-btn" class="btn btn-primary">🎲 Judo Roulette Mode</button>
+            <button id="timer-mode-btn" class="btn btn-secondary">⏱️ Gym Timer Mode</button>
+        </div>
 
-             try {
-                 const response = await fetch('/roulette', {
-                     method: 'POST',
-                     headers: {
-                         'Content-Type': 'application/json',
-                     },
-                     body: JSON.stringify({ category: category, belt: belt })
-                 });
+        <!-- Roulette Section -->
+        <div id="roulette-section" style="display: none;">
+            <div class="filters">
+                <div class="filter-group">
+                    <label>🎯 Technique Category:</label>
+                    <select id="category">
+                        <option value="all">All Techniques</option>
+                        <option value="ne-waza">Only Ne-Waza (Ground)</option>
+                        <option value="tachi-waza">Only Tachi-Waza (Standing)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>🥋 Belt Level (and below):</label>
+                    <select id="belt">
+                        <option value="all">All Belts</option>
+                        {% for belt in belts %}
+                        <option value="{{ belt }}">{{ belt | capitalize }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button onclick="spinRoulette()">🎲 Spin the Roulette 🎲</button>
+            </div>
+            <div id="loading" class="loading">
+                <p>🎯 Choosing technique...</p>
+            </div>
+            <div id="result" class="result">
+                <div class="technique-name" id="techniqueName"></div>
+                <div class="technique-details">
+                    <span id="techniqueCategory"></span>
+                    <span>Belt: <span id="techniqueBelt"></span></span>
+                </div>
+            </div>
+        </div>
 
-                 if (!response.ok) {
-                     throw new Error('No techniques found for these criteria');
-                 }
+        <!-- Timer Section -->
+        <div id="timer-section" style="display: none;">
+            <h2 class="text-center mb-4">Workout Interval Timer with Judo Techniques</h2>
+            <div id="current-technique-display" class="technique-display" style="display: none;">
+                <h3>Current Technique: <span id="current-technique-name"></span></h3>
+                <p>Category: <span id="current-technique-category"></span> | Belt: <span id="current-technique-belt"></span></p>
+            </div>
+            <form id="workout-form" class="row gy-3">
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" id="exercise-name" class="form-control" placeholder="Exercise name" required>
+                        <label for="exercise-name">Exercise Name</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input type="number" id="reps" class="form-control" min="1" step="1" placeholder="Reps" required>
+                        <label for="reps">Reps</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating mb-3">
+                        <input type="number" id="sets" class="form-control" min="1" step="1" placeholder="Sets" required>
+                        <label for="sets">Sets</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating mb-3">
+                        <input type="number" id="interval" class="form-control" min="1" step="1" placeholder="Interval (seconds)" required>
+                        <label for="interval">Interval (seconds)</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating mb-3">
+                        <input type="number" id="rest" class="form-control" min="0" step="1" placeholder="Rest (seconds)" required>
+                        <label for="rest">Rest (seconds)</label>
+                    </div>
+                </div>
+                <div class="col-12 text-center">
+                    <button type="submit" id="add-workout" class="btn btn-primary mt-3">Add Workout</button>
+                </div>
+            </form>
+            <ul id="workout-list" class="list-group my-4" aria-label="List of added workouts"></ul>
+            <div class="text-center">
+                <h2 id="timer-display" aria-live="polite">00:00</h2>
+                <h3 id="current-set" class="highlighted-text" aria-live="polite"></h3>
+                <h3 id="current-exercise" class="highlighted-text" aria-live="polite"></h3>
+                <h3 id="workout-state" class="highlighted-text" aria-live="polite"></h3>
+                <div class="btn-group mt-3" role="group" aria-label="Timer controls">
+                    <button id="start" class="btn btn-success">Start</button>
+                    <button id="pause" class="btn btn-warning" disabled>Pause</button>
+                    <button id="clear-workouts" class="btn btn-danger">Clear Workouts</button>
+                </div>
+                <div id="completion-message" class="alert alert-success mt-4 d-none" role="alert">
+                    All workouts completed!
+                </div>
+                <div id="no-workouts-warning" class="alert alert-danger mt-4 d-none" role="alert">
+                    No workouts added! Please add a workout to start the timer.
+                </div>
+            </div>
+        </div>
+    </div>
 
-                 const technique = await response.json();
+    <footer class="text-center mb-2">
+        <a href="https://github.com/codecaine-zz/workout_interval_timer" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-github fa-2x" aria-label="GitHub repository"></i>
+        </a>
+    </footer>
 
-                 document.getElementById('techniqueName').textContent = technique.name;
-                 document.getElementById('techniqueCategory').textContent =
-                     technique.category === 'ne-waza' ? 'Ground Technique' : 'Standing Technique';
-                 document.getElementById('techniqueBelt').textContent =
-                     technique.belt.charAt(0).toUpperCase() + technique.belt.slice(1);
+    <script src="static/workout_timer.js"></script>
+    <script>
+        // Global variables
+        let currentMode = 'roulette'; // 'roulette' or 'timer'
+        let currentTechnique = null;
+        let judoTimerInterval = null;
 
-                 document.getElementById('result').classList.add('show');
-             } catch (error) {
-                 alert(error.message);
-             } finally {
-                 document.getElementById('loading').classList.remove('show');
-             }
-         }
+        // Mode switching
+        document.getElementById('roulette-mode-btn').addEventListener('click', () => switchMode('roulette'));
+        document.getElementById('timer-mode-btn').addEventListener('click', () => switchMode('timer'));
 
-         document.addEventListener('keypress', function(e) {
-             if (e.key === 'Enter') {
-                 spinRoulette();
-             }
-         });
-         // Complete belt color mapping function
-         function applyBeltColor() {
-         const beltSpan = document.getElementById('techniqueBelt');
-         const beltText = beltSpan.textContent.toLowerCase().trim();
+        function switchMode(mode) {
+            currentMode = mode;
+            document.getElementById('roulette-section').style.display = mode === 'roulette' ? 'block' : 'none';
+            document.getElementById('timer-section').style.display = mode === 'timer' ? 'block' : 'none';
 
-         // Color mapping for belts (white and black excluded)
-         const beltColors = {
-         'yellow': '#d4af37',
-         'orange': '#ff8c00',
-         'green': '#2e8b57',
-         'blue': '#4169e1',
-         'brown': '#8b4513',
-         'red': '#dc143c'
-         };
+            // Update button styles
+            document.getElementById('roulette-mode-btn').className = mode === 'roulette' ? 'btn btn-primary' : 'btn btn-secondary';
+            document.getElementById('timer-mode-btn').className = mode === 'timer' ? 'btn btn-primary' : 'btn btn-secondary';
+        }
 
-         // Reset to default (no color for white/black)
-         beltSpan.style.color = '';
-         beltSpan.style.fontWeight = '';
+        async function spinRoulette() {
+            const category = document.getElementById('category').value;
+            const belt = document.getElementById('belt').value;
 
-         // Apply color if belt is in the mapping
-         if (beltColors[beltText]) {
-         beltSpan.style.color = beltColors[beltText];
-         beltSpan.style.fontWeight = 'bold';
-         }
-         }
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('result').classList.remove('show');
 
-         // Call this function after setting the belt text
-         applyBeltColor();
-      </script>
-   </body>
+            try {
+                const response = await fetch('/roulette', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ category: category, belt: belt })
+                });
+
+                if (!response.ok) {
+                    throw new Error('No techniques found for these criteria');
+                }
+
+                const technique = await response.json();
+
+                document.getElementById('techniqueName').textContent = technique.name;
+                document.getElementById('techniqueCategory').textContent =
+                    technique.category === 'ne-waza' ? 'Ground Technique' : 'Standing Technique';
+                document.getElementById('techniqueBelt').textContent =
+                    technique.belt.charAt(0).toUpperCase() + technique.belt.slice(1);
+
+                document.getElementById('result').classList.add('show');
+                applyBeltColor();
+            } catch (error) {
+                alert(error.message);
+            } finally {
+                document.getElementById('loading').classList.remove('show');
+            }
+        }
+
+        // Function to get random technique for timer mode
+        async function getRandomTechnique() {
+            try {
+                const response = await fetch('/roulette', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ category: 'all', belt: 'all' })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to get technique');
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('Error getting technique:', error);
+                return null;
+            }
+        }
+
+        // Display current technique in timer mode
+        function displayCurrentTechnique(technique) {
+            if (technique) {
+                document.getElementById('current-technique-display').style.display = 'block';
+                document.getElementById('current-technique-name').textContent = technique.name;
+                document.getElementById('current-technique-category').textContent =
+                    technique.category === 'ne-waza' ? 'Ground Technique' : 'Standing Technique';
+                document.getElementById('current-technique-belt').textContent =
+                    technique.belt.charAt(0).toUpperCase() + technique.belt.slice(1);
+            }
+        }
+
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && currentMode === 'roulette') {
+                spinRoulette();
+            }
+        });
+
+        // Complete belt color mapping function
+        function applyBeltColor() {
+            const beltSpan = document.getElementById('techniqueBelt');
+            const beltText = beltSpan.textContent.toLowerCase().trim();
+
+            // Color mapping for belts (white and black excluded)
+            const beltColors = {
+                'yellow': '#d4af37',
+                'orange': '#ff8c00',
+                'green': '#2e8b57',
+                'blue': '#4169e1',
+                'brown': '#8b4513',
+                'red': '#dc143c'
+            };
+
+            // Reset to default (no color for white/black)
+            beltSpan.style.color = '';
+            beltSpan.style.fontWeight = '';
+
+            // Apply color if belt is in the mapping
+            if (beltColors[beltText]) {
+                beltSpan.style.color = beltColors[beltText];
+                beltSpan.style.fontWeight = 'bold';
+            }
+        }
+    </script>
+</body>
 </html>

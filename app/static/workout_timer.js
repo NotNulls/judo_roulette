@@ -33,7 +33,8 @@ let state = {
     isRestPeriod: false,
     timer: null,
     currentTime: 0,
-    isPaused: false
+    isPaused: false,
+    currentTechnique: null
 };
 
 // Event listeners
@@ -78,6 +79,9 @@ function resetDisplay() {
     elements.workoutStateDisplay.textContent = '';
     elements.startBtn.disabled = false;
     elements.pauseBtn.disabled = true;
+
+    // Hide technique display
+    document.getElementById('current-technique-display').style.display = 'none';
 }
 
 function clearWorkouts() {
@@ -85,15 +89,16 @@ function clearWorkouts() {
     state.workouts = [];
     state.currentWorkoutIndex = 0;
     state.currentSet = 1;
+    state.currentTechnique = null;
     resetDisplay();
 }
 
-function startTimer() {
+async function startTimer() {
     if (state.workouts.length > 0) {
         if (state.isPaused) {
             resumeTimer();
         } else {
-            initializeNewWorkout();
+            await initializeNewWorkout();
         }
         elements.startBtn.disabled = true;
         elements.pauseBtn.disabled = false;
@@ -105,12 +110,17 @@ function startTimer() {
     }
 }
 
-function initializeNewWorkout() {
+async function initializeNewWorkout() {
     state.currentWorkoutIndex = 0;
     state.currentSet = 1;
     state.isRestPeriod = false;
     const currentWorkout = state.workouts[state.currentWorkoutIndex];
     state.currentTime = currentWorkout.interval;
+
+    // Get new random technique
+    state.currentTechnique = await getRandomTechnique();
+    displayCurrentTechnique(state.currentTechnique);
+
     updateWorkoutState(WORKOUT_STATES.WORKOUT);
 }
 
@@ -139,14 +149,14 @@ function timerTick() {
     }
 }
 
-function nextStep() {
+async function nextStep() {
     state.isRestPeriod = !state.isRestPeriod;
     const currentWorkout = state.workouts[state.currentWorkoutIndex];
 
     if (state.isRestPeriod) {
         handleRestPeriod(currentWorkout);
     } else {
-        handleWorkoutPeriod(currentWorkout);
+        await handleWorkoutPeriod(currentWorkout);
     }
 
     updateDisplay();
@@ -163,16 +173,27 @@ function handleRestPeriod(currentWorkout) {
     state.currentTime = currentWorkout.rest;
 }
 
-function handleWorkoutPeriod(currentWorkout) {
+async function handleWorkoutPeriod(currentWorkout) {
     updateWorkoutState(WORKOUT_STATES.WORKOUT);
     state.currentTime = currentWorkout.interval;
+
+    // Get new random technique for each workout interval
+    state.currentTechnique = await getRandomTechnique();
+    displayCurrentTechnique(state.currentTechnique);
+
+    // Speak the technique name
+    if (state.currentTechnique) {
+        speak(`Technique: ${state.currentTechnique.name}`);
+    }
 }
 
 function moveToNextWorkout() {
     state.currentSet = 1;
     const currentExercise = elements.workoutList.children[state.currentWorkoutIndex];
-    currentExercise.classList.add('completed');
-    currentExercise.dataset.completed = 'true';
+    if (currentExercise) {
+        currentExercise.classList.add('completed');
+        currentExercise.dataset.completed = 'true';
+    }
 
     state.currentWorkoutIndex++;
 
@@ -188,10 +209,12 @@ function completeWorkout() {
 }
 
 function updateDisplay() {
-    const currentWorkout = state.workouts[state.currentWorkoutIndex];
-    elements.timerDisplay.textContent = formatTime(state.currentTime);
-    elements.currentSetDisplay.textContent = `Current Set: ${state.currentSet}`;
-    elements.currentExerciseDisplay.textContent = `Current Exercise: ${currentWorkout.exerciseName}`;
+    if (state.workouts.length > 0 && state.currentWorkoutIndex < state.workouts.length) {
+        const currentWorkout = state.workouts[state.currentWorkoutIndex];
+        elements.timerDisplay.textContent = formatTime(state.currentTime);
+        elements.currentSetDisplay.textContent = `Current Set: ${state.currentSet}`;
+        elements.currentExerciseDisplay.textContent = `Current Exercise: ${currentWorkout.exerciseName}`;
+    }
 }
 
 function formatTime(seconds) {
@@ -203,4 +226,38 @@ function formatTime(seconds) {
 function speak(text) {
     const utterance = new SpeechSynthesisUtterance(text);
     window.speechSynthesis.speak(utterance);
+}
+
+// Function to get random technique for timer mode
+async function getRandomTechnique() {
+    try {
+        const response = await fetch('/roulette', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ category: 'all', belt: 'all' })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to get technique');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error getting technique:', error);
+        return null;
+    }
+}
+
+// Display current technique in timer mode
+function displayCurrentTechnique(technique) {
+    if (technique) {
+        document.getElementById('current-technique-display').style.display = 'block';
+        document.getElementById('current-technique-name').textContent = technique.name;
+        document.getElementById('current-technique-category').textContent =
+            technique.category === 'ne-waza' ? 'Ground Technique' : 'Standing Technique';
+        document.getElementById('current-technique-belt').textContent =
+            technique.belt.charAt(0).toUpperCase() + technique.belt.slice(1);
+    }
 }
