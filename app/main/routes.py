@@ -126,8 +126,3 @@ def minutes(num):
 @main_bp.route('/<int:num>h')
 def hours(num):
     return redirect(url_for('main.index', num=num*3600))
-
-# todo pomodoro mode: loop a 25-5 minutes cycle
-# @main_bp.route('/pomodoro')
-# def pomodoro():
-#     return render_template('index.html')
