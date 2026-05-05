@@ -12,9 +12,10 @@
         <p class="subtitle">Let fate choose your next technique!</p>
 
         <!-- Mode Selection -->
+        <!-- Mode Selection -->
         <div class="mode-selection">
-            <button id="roulette-mode-btn" class="btn btn-primary">🎲 Judo Roulette Mode</button>
-            <button id="timer-mode-btn" class="btn btn-secondary">⏱️ Gym Timer Mode</button>
+            <button id="roulette-mode-btn" class="btn btn-primary"><span class="emoji">🎲</span> Judo Roulette Mode</button>
+            <button id="timer-mode-btn" class="btn btn-secondary"><span class="emoji">⏱️</span> Gym Timer Mode</button>
         </div>
 
         <!-- Roulette Section -->
@@ -37,7 +38,8 @@
                         {% endfor %}
                     </select>
                 </div>
-                <button onclick="spinRoulette()">🎲 Spin the Roulette 🎲</button>
+                <!-- Inside the roulette section, update the spin button (around line 30-35) -->
+                <button onclick="spinRoulette()"><span class="emoji">🎲</span> Spin the Roulette <span class="emoji">🎲</span></button>
             </div>
             <div id="loading" class="loading">
                 <p>🎯 Choosing technique...</p>

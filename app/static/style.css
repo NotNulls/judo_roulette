@@ -377,3 +377,25 @@ footer a:hover {
       font-size: 36px;
   }
 }
+
+/* Hide emojis on small screens when text wraps */
+@media (max-width: 480px) {
+    .mode-selection {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .mode-selection button,
+    .filters button {
+        width: 100%;
+        padding: 12px;
+        white-space: normal;
+        word-wrap: break-word;
+    }
+
+    .mode-selection .emoji,
+    .filters button .emoji {
+        display: none;
+    }
+}
