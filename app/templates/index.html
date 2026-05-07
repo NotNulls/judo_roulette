@@ -30,13 +30,13 @@
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label>🥋 Belt Level (and below):</label>
-                    <select id="belt">
-                        <option value="all">All Belts</option>
+                    <label>🥋 Belt Levels (select all that apply):</label>
+                    <select id="belt" multiple size="5" style="height: auto; min-height: 120px;">
                         {% for belt in belts %}
                         <option value="{{ belt }}">{{ belt | capitalize }}</option>
                         {% endfor %}
                     </select>
+                    <small style="display: block; margin-top: 5px; color: #666;">Hold Ctrl (Windows) or Cmd (Mac) to select multiple belts</small>
                 </div>
                 <!-- Inside the roulette section, update the spin button (around line 30-35) -->
                 <button onclick="spinRoulette()"><span class="emoji">🎲</span> Spin the Roulette <span class="emoji">🎲</span></button>
@@ -144,41 +144,46 @@
         }
 
         async function spinRoulette() {
-            const category = document.getElementById('category').value;
-            const belt = document.getElementById('belt').value;
+                    const category = document.getElementById('category').value;
+                    // Get all selected belt values
+                    const beltSelect = document.getElementById('belt');
+                    const selectedBelts = Array.from(beltSelect.selectedOptions).map(option => option.value);
 
-            document.getElementById('loading').classList.add('show');
-            document.getElementById('result').classList.remove('show');
+                    // If no belts selected, use 'all' to include all belts
+                    const belt = selectedBelts.length === 0 ? 'all' : selectedBelts;
 
-            try {
-                const response = await fetch('/roulette', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ category: category, belt: belt })
-                });
+                    document.getElementById('loading').classList.add('show');
+                    document.getElementById('result').classList.remove('show');
 
-                if (!response.ok) {
-                    throw new Error('No techniques found for these criteria');
+                    try {
+                        const response = await fetch('/roulette', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ category: category, belt: belt })
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('No techniques found for these criteria');
+                        }
+
+                        const technique = await response.json();
+
+                        document.getElementById('techniqueName').textContent = technique.name;
+                        document.getElementById('techniqueCategory').textContent =
+                            technique.category === 'ne-waza' ? 'Ground Technique' : 'Standing Technique';
+                        document.getElementById('techniqueBelt').textContent =
+                            technique.belt.charAt(0).toUpperCase() + technique.belt.slice(1);
+
+                        document.getElementById('result').classList.add('show');
+                        applyBeltColor();
+                    } catch (error) {
+                        alert(error.message);
+                    } finally {
+                        document.getElementById('loading').classList.remove('show');
+                    }
                 }
-
-                const technique = await response.json();
-
-                document.getElementById('techniqueName').textContent = technique.name;
-                document.getElementById('techniqueCategory').textContent =
-                    technique.category === 'ne-waza' ? 'Ground Technique' : 'Standing Technique';
-                document.getElementById('techniqueBelt').textContent =
-                    technique.belt.charAt(0).toUpperCase() + technique.belt.slice(1);
-
-                document.getElementById('result').classList.add('show');
-                applyBeltColor();
-            } catch (error) {
-                alert(error.message);
-            } finally {
-                document.getElementById('loading').classList.remove('show');
-            }
-        }
 
         // Function to get random technique for timer mode
         async function getRandomTechnique() {

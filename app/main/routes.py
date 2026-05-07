@@ -72,6 +72,7 @@ TECHNIQUES = [
 
 BELTS = ["yellow", "orange", "green", "blue", "brown"]
 
+
 def filter_techniques(category=None, belt=None):
     """Filter techniques based on category and belt level"""
     filtered = TECHNIQUES
@@ -82,8 +83,14 @@ def filter_techniques(category=None, belt=None):
         filtered = [t for t in filtered if t["category"] == "tachi-waza"]
 
     if belt and belt != "all":
-        belt_index = BELTS.index(belt)
-        filtered = [t for t in filtered if BELTS.index(t["belt"]) <= belt_index]
+        # Handle both single belt (string) and multiple belts (list)
+        if isinstance(belt, list):
+            selected_belts = belt
+        else:
+            selected_belts = [belt]
+
+        # Filter techniques where belt is in the selected belts list
+        filtered = [t for t in filtered if t["belt"] in selected_belts]
 
     return filtered
 
