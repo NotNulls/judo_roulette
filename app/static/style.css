@@ -399,3 +399,18 @@ footer a:hover {
         display: none;
     }
 }
+
+/* Append to app/static/style.css */
+#timer-display.warning {
+  color: #dc143c !important;
+  animation: pulse 0.6s infinite alternate;
+}
+@keyframes pulse {
+  from { transform: scale(1); }
+  to   { transform: scale(1.08); }
+}
+#training-history li {
+  padding: 6px 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 0.95em;
+}

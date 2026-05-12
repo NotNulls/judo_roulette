@@ -53,6 +53,38 @@
             </div>
         </div>
 
+        <!-- 1) Belt + category filters for the timer (above the workout form) -->
+        <div class="filter-group">
+          <label for="timer-category">Technique Category:</label>
+          <select id="timer-category">
+            <option value="all">All Techniques</option>
+            <option value="ne-waza">Only Ne-Waza (Ground)</option>
+            <option value="tachi-waza">Only Tachi-Waza (Standing)</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="timer-belts">Belt levels (Ctrl/Cmd-click for multiple):</label>
+          <select id="timer-belts" multiple size="5">
+            {% for belt in belts %}
+              <option value="{{ belt }}" selected>{{ belt | capitalize }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- 2) Current technique card (must contain these IDs) -->
+        <div id="current-technique-display" style="display:none; padding:15px; margin:15px 0;
+             background:#f5f7fa; border-radius:10px;">
+          <h3>Current Technique: <span id="current-technique-name"></span></h3>
+          <p>Category: <span id="current-technique-category"></span> |
+             Belt: <span id="current-technique-belt"></span></p>
+        </div>
+
+        <!-- 3) Training history -->
+        <div style="margin-top:20px; text-align:left;">
+          <h4>Training history</h4>
+          <ul id="training-history" style="list-style:none; padding:0; max-height:220px; overflow:auto;"></ul>
+        </div>
+
         <!-- Timer Section -->
         <div id="timer-section" style="display: none;">
             <h2 class="text-center mb-4">Workout Interval Timer with Judo Techniques</h2>
